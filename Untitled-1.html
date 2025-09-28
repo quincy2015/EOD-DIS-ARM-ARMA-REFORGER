@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wire Cutting Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f9f9f9; padding:20px; }
+    h1 { color:#333; }
+    .wire-select { margin-bottom:10px; }
+    label { margin-right:10px; }
+    select { margin-left:5px; }
+    #result { margin-top:20px; font-size:1.2em; font-weight:bold; }
+    button { padding:10px 20px; font-size:1em; }
+  </style>
+</head>
+<body>
+  <h1>Wire Cutting Calculator</h1>
+  
+  <div class="wire-select">
+    <label>Red Wire:
+      <select id="red">
+        <option value="good">Good</option>
+        <option value="loose">Loose</option>
+        <option value="frayed">Frayed</option>
+        <option value="scorched">Scorched</option>
+      </select>
+    </label>
+  </div>
+  
+  <div class="wire-select">
+    <label>Yellow Wire:
+      <select id="yellow">
+        <option value="good">Good</option>
+        <option value="loose">Loose</option>
+        <option value="frayed">Frayed</option>
+        <option value="scorched">Scorched</option>
+      </select>
+    </label>
+  </div>
+  
+  <div class="wire-select">
+    <label>Blue Wire:
+      <select id="blue">
+        <option value="good">Good</option>
+        <option value="loose">Loose</option>
+        <option value="frayed">Frayed</option>
+        <option value="scorched">Scorched</option>
+      </select>
+    </label>
+  </div>
+  
+  <div class="wire-select">
+    <label>Black Wire:
+      <select id="black">
+        <option value="good">Good</option>
+        <option value="loose">Loose</option>
+        <option value="frayed">Frayed</option>
+        <option value="scorched">Scorched</option>
+      </select>
+    </label>
+  </div>
+  
+  <button onclick="decide()">Decide Wire</button>
+  
+  <div id="result"></div>
+  
+  <script>
+    function decide() {
+      const red = document.getElementById("red").value;
+      const yellow = document.getElementById("yellow").value;
+      const blue = document.getElementById("blue").value;
+      const black = document.getElementById("black").value;
+
+      const wires = { red, yellow, blue, black };
+
+      function count(cond) {
+        return Object.values(wires).filter(v => v === cond).length;
+      }
+
+      let cut = "No matching rule";
+
+      // Rule 1
+      if (red==="frayed" && yellow==="loose") cut="Black";
+      // Rule 2
+      else if (count("good")>=2) {
+        if (red!=="loose") cut="Red";
+      }
+      // Rule 3
+      else if (blue==="scorched" && yellow==="good") cut="Yellow";
+      // Rule 4
+      else if (black==="loose" && count("frayed")>=2) cut="Blue";
+      // Rule 5
+      else if (red==="frayed" && blue==="loose" && yellow==="good" && black==="scorched") cut="Red";
+      // Rule 6
+      else if (red==="loose" && black==="good") cut="Blue";
+      // Rule 7
+      else if (count("scorched")===3) cut="Yellow";
+      // Rule 8
+      else if (red==="loose" && yellow==="frayed" && blue==="good" && black==="scorched") cut="Black";
+      // Rule 9
+      else if (count("good")===0) cut="Black";
+      // Rule 10
+      else if (red==="scorched" && count("loose")===1) cut="Blue";
+      // Rule 11
+      else if (yellow==="scorched" && red==="good") cut="Black";
+      // Rule 12
+      else if (blue==="frayed" && black==="scorched") cut="Red";
+      // Rule 13
+      else if (red==="loose" && count("scorched")>=2 && black!=="frayed") cut="Yellow";
+      // Rule 14
+      else if (red==="good" && black==="loose" && yellow==="frayed" && blue!=="good") cut="Blue";
+      // Rule 15
+      else if (yellow==="good" && blue==="loose" && red!=="frayed") cut="Red";
+      // Rule 16
+      else if (red==="frayed" && blue==="loose" && yellow==="scorched") cut="Yellow";
+      // Rule 17
+      else if (count("good")===4) {
+        const options=["Red","Yellow","Blue","Black"];
+        cut = options[Math.floor(Math.random()*4)];
+      }
+
+      document.getElementById("result").textContent = "Cut the " + cut + " wire.";
+    }
+  </script>
+</body>
+</html>
