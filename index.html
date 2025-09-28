@@ -4,66 +4,136 @@
   <meta charset="UTF-8">
   <title>Wire Cutting Calculator</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#f9f9f9; padding:20px; }
-    h1 { color:#333; }
-    .wire-select { margin-bottom:10px; }
-    label { margin-right:10px; }
-    select { margin-left:5px; }
-    #result { margin-top:20px; font-size:1.2em; font-weight:bold; }
-    button { padding:10px 20px; font-size:1em; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ece9e6, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .wire-select {
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    /* Color coding for wires */
+    label.red { color: #d32f2f; }
+    label.yellow { color: #f9a825; }
+    label.blue { color: #1976d2; }
+    label.black { color: #212121; }
+
+    button {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #0d47a1;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 1.3em;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    #result.red { background: #ffebee; color: #c62828; }
+    #result.yellow { background: #fffde7; color: #f57f17; }
+    #result.blue { background: #e3f2fd; color: #1565c0; }
+    #result.black { background: #eeeeee; color: #212121; }
   </style>
 </head>
 <body>
-  <h1>Wire Cutting Calculator</h1>
-  
-  <div class="wire-select">
-    <label>Red Wire:
+  <div class="container">
+    <h1>Wire Cutting Calculator</h1>
+    
+    <div class="wire-select">
+      <label class="red">Red Wire</label>
       <select id="red">
         <option value="good">Good</option>
         <option value="loose">Loose</option>
         <option value="frayed">Frayed</option>
         <option value="scorched">Scorched</option>
       </select>
-    </label>
-  </div>
-  
-  <div class="wire-select">
-    <label>Yellow Wire:
+    </div>
+
+    <div class="wire-select">
+      <label class="yellow">Yellow Wire</label>
       <select id="yellow">
         <option value="good">Good</option>
         <option value="loose">Loose</option>
         <option value="frayed">Frayed</option>
         <option value="scorched">Scorched</option>
       </select>
-    </label>
-  </div>
-  
-  <div class="wire-select">
-    <label>Blue Wire:
+    </div>
+
+    <div class="wire-select">
+      <label class="blue">Blue Wire</label>
       <select id="blue">
         <option value="good">Good</option>
         <option value="loose">Loose</option>
         <option value="frayed">Frayed</option>
         <option value="scorched">Scorched</option>
       </select>
-    </label>
-  </div>
-  
-  <div class="wire-select">
-    <label>Black Wire:
+    </div>
+
+    <div class="wire-select">
+      <label class="black">Black Wire</label>
       <select id="black">
         <option value="good">Good</option>
         <option value="loose">Loose</option>
         <option value="frayed">Frayed</option>
         <option value="scorched">Scorched</option>
       </select>
-    </label>
+    </div>
+
+    <button onclick="decide()">Decide Wire</button>
+    
+    <div id="result"></div>
   </div>
-  
-  <button onclick="decide()">Decide Wire</button>
-  
-  <div id="result"></div>
-  
+
   <script>
     function decide() {
       const red = document.getElementById("red").value;
@@ -78,48 +148,35 @@
       }
 
       let cut = "No matching rule";
+      let colorClass = "";
 
       // Rule 1
-      if (red==="frayed" && yellow==="loose") cut="Black";
-      // Rule 2
-      else if (count("good")>=2) {
-        if (red!=="loose") cut="Red";
-      }
-      // Rule 3
-      else if (blue==="scorched" && yellow==="good") cut="Yellow";
-      // Rule 4
-      else if (black==="loose" && count("frayed")>=2) cut="Blue";
-      // Rule 5
-      else if (red==="frayed" && blue==="loose" && yellow==="good" && black==="scorched") cut="Red";
-      // Rule 6
-      else if (red==="loose" && black==="good") cut="Blue";
-      // Rule 7
-      else if (count("scorched")===3) cut="Yellow";
-      // Rule 8
-      else if (red==="loose" && yellow==="frayed" && blue==="good" && black==="scorched") cut="Black";
-      // Rule 9
-      else if (count("good")===0) cut="Black";
-      // Rule 10
-      else if (red==="scorched" && count("loose")===1) cut="Blue";
-      // Rule 11
-      else if (yellow==="scorched" && red==="good") cut="Black";
-      // Rule 12
-      else if (blue==="frayed" && black==="scorched") cut="Red";
-      // Rule 13
-      else if (red==="loose" && count("scorched")>=2 && black!=="frayed") cut="Yellow";
-      // Rule 14
-      else if (red==="good" && black==="loose" && yellow==="frayed" && blue!=="good") cut="Blue";
-      // Rule 15
-      else if (yellow==="good" && blue==="loose" && red!=="frayed") cut="Red";
-      // Rule 16
-      else if (red==="frayed" && blue==="loose" && yellow==="scorched") cut="Yellow";
-      // Rule 17
+      if (red==="frayed" && yellow==="loose") { cut="Red"; colorClass="black"; }
+      else if (count("good")>=2 && red!=="loose") { cut="Red"; colorClass="red"; }
+      else if (blue==="scorched" && yellow==="good") { cut="Yellow"; colorClass="yellow"; }
+      else if (black==="loose" && count("frayed")>=2) { cut="Blue"; colorClass="blue"; }
+      else if (red==="frayed" && blue==="loose" && yellow==="good" && black==="scorched") { cut="Red"; colorClass="red"; }
+      else if (red==="loose" && black==="good") { cut="Blue"; colorClass="blue"; }
+      else if (count("scorched")===3) { cut="Yellow"; colorClass="yellow"; }
+      else if (red==="loose" && yellow==="frayed" && blue==="good" && black==="scorched") { cut="Black"; colorClass="black"; }
+      else if (count("good")===0) { cut="Black"; colorClass="black"; }
+      else if (red==="scorched" && count("loose")===1) { cut="Blue"; colorClass="blue"; }
+      else if (yellow==="scorched" && red==="good") { cut="Black"; colorClass="black"; }
+      else if (blue==="frayed" && black==="scorched") { cut="Red"; colorClass="red"; }
+      else if (red==="loose" && count("scorched")>=2 && black!=="frayed") { cut="Yellow"; colorClass="yellow"; }
+      else if (red==="good" && black==="loose" && yellow==="frayed" && blue!=="good") { cut="Blue"; colorClass="blue"; }
+      else if (yellow==="good" && blue==="loose" && red!=="frayed") { cut="Red"; colorClass="red"; }
+      else if (red==="frayed" && blue==="loose" && yellow==="scorched") { cut="Yellow"; colorClass="yellow"; }
       else if (count("good")===4) {
         const options=["Red","Yellow","Blue","Black"];
         cut = options[Math.floor(Math.random()*4)];
+        colorClass = cut.toLowerCase();
       }
 
-      document.getElementById("result").textContent = "Cut the " + cut + " wire.";
+      const resultDiv = document.getElementById("result");
+      resultDiv.textContent = "Cut the " + cut + " wire.";
+      resultDiv.className = colorClass;
+      resultDiv.style.display = "block";
     }
   </script>
 </body>
